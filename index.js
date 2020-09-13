@@ -51,6 +51,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Back End Routes
+app.use('/.well-known/pki-validation', express.static('static'))
 app.use("/", defaultRoute);
 app.use('/api/posts', postRoute);
 app.use('/api/users', userRoute);

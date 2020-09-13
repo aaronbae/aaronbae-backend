@@ -8,7 +8,7 @@ const remote_mongo = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
-};
+}
 
 const aws_mongo = {
   DB: process.env.MONGO_EC2_URL,

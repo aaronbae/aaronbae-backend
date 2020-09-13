@@ -10,7 +10,6 @@ const remote_mongo = {
   }
 }
 
-
 const aws_mongo = {
   DB: process.env.MONGO_EC2_URL,
   options: {

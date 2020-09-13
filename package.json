@@ -18,7 +18,7 @@
     "mongoose": "^5.9.27",
     "multer": "^1.4.2",
     "node-cron": "^2.0.3",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "nodemailer": "^6.4.11",
     "nodemon": "^2.0.4",
     "socket.io": "^2.3.0"

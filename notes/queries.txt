@@ -1,0 +1,21 @@
+// Creating History collection
+db.stocks.aggregate([{$unwind:"$history"},{$unset: "_id"},{$project: {ticker: "$ticker", open: "$history.open", high:"$history.high", low: "$history.low", close: "$history.close", change: {$} , date: "$history.date"}}, {$out: "history"}])
+db.stocks.updateMany({},{$unset:{history:1, "__v":1}})
+
+// Reverting back History and Stocks to remove DUPLICATES
+db.history.remove({date: {$gte: new Date(2020, 7, 30)}}, false)
+db.stocks.updateMany({}, {$set:{updated: new Date(2020, 7,29, 0, 0, 0)}})
+
+// Checking Reverted data
+db.history.find({ticker: "A", date: {$gte:new Date(2020, 7, 0)}})
+db.stocks.find({ticker: "A"})
+
+// Compacting after data deletion
+db.runCommand({compact: "stocks"})
+db.runCommand({compact: "history"})
+
+// Mongo free Monitoring
+db.enableFreeMonitoring()
+
+// Create Partial Index
+db.history.createIndex({ticker: 1, date: -1},{partialFilterExpression: {date: {$gt: new Date(2020, 0, 1)}}})

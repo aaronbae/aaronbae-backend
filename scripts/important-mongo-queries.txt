@@ -1,0 +1,59 @@
+db.posts.aggregate([
+  { "$addFields": {
+    "content": { 
+      "$reduce": {
+        "input": "$content",
+        "initialValue": "",
+        "in": {
+          "$cond": {
+            "if": { "$eq": [ { "$strLenCP": "$$this" }, 0 ] },
+            "then": { "$concat": [ "$$value", "<div>","<br>", "</div>" ] },
+            "else": { "$concat": [ "$$value", "<div>", "$$this", "</div>" ] }
+          }    
+	}
+      }        
+    }
+  }},
+  { "$out" : "posts"
+  }
+])
+
+db.posts.find({title:{$eq:"Meta Tags Finished"}})
+
+db.posts.find({}).forEach(function(e,i) {
+    function replacer(match) {
+        const corrected = match.replace(/<div>|<\/div>/gi, "").replace(/https:\/\/aaronbaebucket.s3.([^/]+)\//gi, "https://aaronbae.com/api/files/")
+        return "<img src='"+corrected+"' class='aws-image' alt='Loaded from AWS' />"
+    }
+    e.content = e.content.replace(/<div>https:\/\/aaronbaebucket.s3.([^/]+)\/([^/]+).(png|jpg|jpeg)<\/div>/gi, replacer)
+    db.posts.save(e);
+});
+
+localhost:3000/blog/meta-tags-finished-5f18fa71cc17d4740dc003f4
+
+
+
+export function convert_div_to_img(content) {
+  const img_div_matcher = new RegExp('<div>https://aaronbaebucket.s3..*/.*.(png|jpg|jpeg)</div>', 'i')
+  const img_header_matcher = new RegExp('https://aaronbaebucket.s3..*/')
+  function replacer(match) {
+    const corrected = match.replace(/<div>|<\/div>/gi, "").replace(img_header_matcher, process.env.NEXT_PUBLIC_FILE_URL)
+    return `<img src="${corrected}" class="aws-image" alt="Loaded from AWS" />`
+  }
+  return content.replace(img_div_matcher, replacer )
+  
+}
+
+
+
+{post.content.map((i, key) => {
+          if(isMyImageURL(i)){
+            return <img key={key} 
+              className="aws-image" 
+              src={convertMyImageURL(i)} 
+              alt="Loaded from AWS" /> 
+          }
+          else {
+            return <div className="content-paragraph" key={key}>{i}</div>
+          }
+        })}

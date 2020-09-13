@@ -5,5 +5,5 @@ node_modules
 .env
 
 # scripts
-scripts/initialize-server.sh
+scripts/init_ubuntu.sh
 scripts/post-receive.txt

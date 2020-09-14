@@ -38,8 +38,8 @@ monitorRoute.route('/db').get(async function (req, res) {
     result.collections = collection_info
     result.total_storage = stats.dataSize
     result.total_reserved = stats.storageSize
-    result.machine_memory_used = stats.fsUsedSize
-    result.machine_memory_total = stats.fsTotalSize
+    //result.machine_memory_used = stats.fsUsedSize
+    //result.machine_memory_total = stats.fsTotalSize
 
     Dates.log(req.baseUrl + req.path, "Successfully fetched db information!")
     res.status(200);

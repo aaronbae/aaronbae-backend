@@ -64,7 +64,7 @@ function dangerously_fetch_yahoo(ticker, previous, today) {
       splitted_text.shift() // removing header
       for(let i = 0; i < splitted_text.length; i++) {
         const splitted_row = splitted_text[i].split(",")    
-        if(!splitted_row.includes("null")){
+        if(!splitted_row.includes("null") && !splitted_row.includes(undefined)){
           let new_row = new History()
           new_row.ticker = ticker
           new_row.date = new Date(splitted_row[0])

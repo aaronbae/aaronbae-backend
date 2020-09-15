@@ -1,25 +1,14 @@
-const remote_mongo = {
-  DB: process.env.MONGO_ATLAS_URL,
+const scale_grid_mongo = {
+  DB: process.env.MONGO_SCALE_GRID_URL,
   options: {
-    ssl: true,
-    sslValidate: false,
     dbName: "aaronbaeDB",
     poolSize: 1,
+    useFindAndModify: false,
+    useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
 }
-
-const aws_mongo = {
-  DB: process.env.MONGO_EC2_URL,
-  options: {
-    autoIndex: false,
-    useFindAndModify: false,
-    useCreateIndex: true,
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  },
-};
 
 const local_mongo = {
   DB: 'mongodb://localhost:27017/aaronbaeDB',
@@ -33,4 +22,4 @@ const local_mongo = {
 };
 
 
-module.exports = process.env.NODE_ENV === "development" ? local_mongo : remote_mongo;
+module.exports = process.env.NODE_ENV === "development" ? local_mongo : scale_grid_mongo;

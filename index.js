@@ -60,11 +60,11 @@ app.use('/api/stocks', stockRoute);
 app.use('/api/monitor', monitorRoute);
 
 // Cron Jobs
-cron_utils.fetch_fresh_data()
-//cron.schedule('0 0 7 * * *', () => {
-//  // At Midnight PST
-//  cron_utils.fetch_fresh_data()
-//});
+//cron_utils.fetch_fresh_data()
+cron.schedule('0 0 7 * * *', () => {
+  // At Midnight PST
+  cron_utils.fetch_fresh_data()
+});
 
 app.use(Sentry.Handlers.errorHandler());
 

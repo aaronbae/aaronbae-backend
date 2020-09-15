@@ -8,12 +8,21 @@ const Dates = require("../utils/Dates");
 userRoutes.route('/:id').get(function (req, res) {
   const ticker = req.params.id.toString().toUpperCase()
 
-  Stocks.guarantee_fresh_yahoo(ticker).then(()=>{
-    return Stocks.query_all(ticker).exec()
+  Stocks.guarantee_fresh_yahoo(ticker).then((count)=>{
+    return Stocks.query_all(ticker).exec().then(stocks=>{
+      return {
+        fetched_count: count, 
+        stocks: stocks
+      }
+    })
   })
-  .then(stocks => {
-    Dates.log(req.baseUrl+req.path)
-    res.json({stocks: stocks})
+  .then(info => {
+    if(info.fetched_count > 0) {
+      Dates.log(req.baseUrl+req.path, `Successful! (fetched ${info.fetched_count} new records)`)
+    } else {
+      Dates.log(req.baseUrl+req.path)
+    }
+    res.json({stocks: info.stocks})
   })
   .catch(error => {
     Dates.error(error, req.baseUrl+req.path)
@@ -27,12 +36,21 @@ userRoutes.route('/:id/:days').get(function (req, res) {
   const ticker = req.params.id.toString().toUpperCase()
   const days = parseInt(req.params.days)
 
-  Stocks.guarantee_fresh_yahoo(ticker).then(()=>{
-    return Stocks.query_limited(ticker, days).exec()
+  Stocks.guarantee_fresh_yahoo(ticker).then((count)=>{
+    return Stocks.query_limited(ticker, days).exec().then(stocks=>{
+      return {
+        fetched_count: count, 
+        stocks: stocks
+      }
+    })
   })
-  .then(stocks => {
-    Dates.log(req.baseUrl+req.path)
-    res.json({stocks: stocks})
+  .then(info => {
+    if(info.fetched_count > 0) {
+      Dates.log(req.baseUrl+req.path, `Successful! (${info.fetched_count} new records)`)
+    } else {
+      Dates.log(req.baseUrl+req.path)
+    }
+    res.json({stocks: info.stocks})
   })
   .catch(error => {
     Dates.error(error, req.baseUrl+req.path)

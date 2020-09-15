@@ -58,9 +58,11 @@ function dangerously_fetch_yahoo(ticker, previous, today) {
       if(text.includes("404 Not Found") || text.includes("422 Unprocessable Entity")) {
         throw new Error("Yahoo returned empty!")
       } 
-      const splitted_text = text.split("\n")
-      let new_history = []
-      for(let i = 1; i < splitted_text.length; i++) {
+      return text.split("\n")
+    })
+    .then(async(splitted_text)=>{
+      splitted_text.shift() // removing header
+      for(let i = 0; i < splitted_text.length; i++) {
         const splitted_row = splitted_text[i].split(",")    
         if(!splitted_row.includes("null")){
           let new_row = new History()
@@ -73,19 +75,25 @@ function dangerously_fetch_yahoo(ticker, previous, today) {
           new_row.adj_close = splitted_row[5]
           new_row.volume = splitted_row[6]
           new_row.change = (new_row.close - new_row.open)/ new_row.open
-          new_history.push(new_row)
+          splitted_text[i] = new_row
+        } else {
+          splitted_text.splice(i, 1)
+          i -= 1
         }
       }
-      if(new_history.length === 0){
-        throw new Error("No New History!")
-      } 
-      await History.insertMany(new_history, {ordered: false}).catch(error=>{
-        Dates.log(error, "UTILS/STOCKS")
-      })
-      await Stock.updateOne({ticker: ticker},{updated: today}, {upsert: true})
-      Dates.log("UTILS/STOCKS", `Added ${new_history.length} new records for ${ticker}!`)
-      resolve(new_history.length)
+      return splitted_text
     })
+    .then(async(new_history)=>{
+      const new_history_length = new_history.length
+      if(new_history_length === 0){
+        throw new Error("No New History!")
+      }
+      return History.insertMany(new_history, {ordered: false}).then(()=>new_history_length)
+    })
+    .then(async(total)=>{
+      return Stock.updateOne({ticker: ticker},{updated: today}, {upsert: true}).then(()=>total)
+    })
+    .then(total=>resolve(total))
     .catch(error => reject(error))
   })
 }
@@ -103,6 +111,7 @@ function guarantee_fresh_yahoo(ticker) {
         const last_updated = stocks.length==0? Dates.to_pst(new Date('1900')): stocks[0].updated
         return dangerously_fetch_yahoo(ticker, last_updated, today)  
       }
+      return 0
     })
     .then((count)=> {
       resolve(count)

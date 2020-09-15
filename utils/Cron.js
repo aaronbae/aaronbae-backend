@@ -66,7 +66,9 @@ function fetch_fresh_data() {
     STOCKS_JOB_STATUS.n = STOCKS_JOB_STATUS.queue.length
     STOCKS_JOB_STATUS.batch_started = current
     STOCKS_JOB_STATUS.last_updated = current
-    mail.new_cron_batch_notification(STOCKS_JOB_STATUS) 
+    if(process.env.NODE_ENV==="production"){
+      mail.new_cron_batch_notification(STOCKS_JOB_STATUS) 
+    } 
     Dates.log("CRON", `reloaded ${stocks.length} stocks!`)
   })
   .catch(error => { 
@@ -76,11 +78,16 @@ function fetch_fresh_data() {
     while(STOCKS_JOB_STATUS.n > 0){
       const ticker = STOCKS_JOB_STATUS.queue.shift()
       STOCKS_JOB_STATUS.n -= 1
+      
       await Stocks.guarantee_fresh_yahoo(ticker)
-      .then(async ()=>{
+      .then(async (fetch_count)=>{
         mail.warn_cron_status()
         STOCKS_JOB_STATUS.last_updated = Dates.current()
-        Dates.log("CRON", `Resolved ${ticker}!`)
+        if(fetch_count > 0){
+          Dates.log("CRON", `Resolved ${ticker}! (${fetch_count} new records)`)
+        } else {
+          Dates.log("CRON", `Resolved ${ticker}!`)
+        }
         //await sleep(STOCKS_JOB_ESTIMATED_INTERVAL * 1000);
       })
       .catch(error => {

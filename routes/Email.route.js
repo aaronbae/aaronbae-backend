@@ -1,11 +1,11 @@
 const express = require('express');
 const emailRoutes = express.Router();
+const path = require('path');
 const Email = require('../utils/Email');
 const Dates = require('../utils/Dates');
 
 emailRoutes.route("/highcurve_logo.svg").get(function(req,res){
-  const dir_splitted = __dirname.split("\\")
-  res.sendFile(dir_splitted.slice(0, dir_splitted.length-1).join("/")+"/static/highcurve_logo.svg")
+  res.sendFile(path.join(__dirname, '../static', 'highcurve_logo.svg'))
 })
 
 emailRoutes.route("/me").post(function (req, res) {
@@ -14,7 +14,7 @@ emailRoutes.route("/me").post(function (req, res) {
     const my_email = process.env.ADMIN_EMAIL
     const my_email_title = `${req.body.name} contacted you through ${req.body.app_name}!`
     const my_email_text = `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage: ${req.body.message}`
-    Email.send_email(my_email, my_email_title, my_email_text) 
+    //Email.send_email(my_email, my_email_title, my_email_text) 
     
     // Send an email to the person who contacted
     const server_ip = process.env.NODE_ENV==="production"?process.env.PRODUCTION_SERVER_IP:process.env.DEVELOPMENT_SERVER_IP

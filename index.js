@@ -22,6 +22,7 @@ const userRoute = require('./routes/User.route');
 const fileRoute = require('./routes/File.route');
 const stockRoute = require('./routes/Stock.route');
 const monitorRoute = require('./routes/Monitor.route');
+const emailRoute = require('./routes/Email.route');
 
 // Supporting
 const Sentry = require('@sentry/node'); 
@@ -58,6 +59,7 @@ app.use('/api/users', userRoute);
 app.use('/api/files', fileRoute);
 app.use('/api/stocks', stockRoute);
 app.use('/api/monitor', monitorRoute);
+app.use('/api/email', emailRoute);
 
 // Cron Jobs
 //cron_utils.fetch_fresh_data()

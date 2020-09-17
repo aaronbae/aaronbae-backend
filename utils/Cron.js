@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const Stocks = require('./Stocks')
 const Dates = require('./Dates')
-const mail = require("./Mail")
+const mail = require("./Email")
 
 module.exports = {
   get_stocks_status: get_stocks_status,

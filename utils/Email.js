@@ -62,12 +62,21 @@ function new_cron_batch_notification(cron_status){
   
   }
 }
-function send_email(to_email, subject, text) {
+function send_email(to_email, subject, text, html="", attachments=[], amp="") {
   const options = {
     from: process.env.ADMIN_EMAIL,
     to: to_email,
     subject: subject,
-    text: text
+    text: text,
+  }
+  if(html!=""){
+    options.html = html
+  }
+  if(attachments.length > 0){
+    options.attachments = attachments
+  }
+  if(amp!=""){
+    options.amp = amp
   }
   transporter.verify().then(()=>{
     transporter.sendMail(options, function(err, data){

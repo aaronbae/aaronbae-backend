@@ -17,7 +17,7 @@ emailRoutes.route("/me").post(async function (req, res) {
   const my_email = process.env.ADMIN_EMAIL
   const my_email_title = `${req.body.name} contacted you through ${req.body.app_name}!`
   const my_email_text = `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage: ${req.body.message}`
-  //Email.send_email(my_email, my_email_title, my_email_text) 
+  Email.send_email(my_email, my_email_title, my_email_text) 
 
   // Send an email to the person who contacted
   html = html.replace("<NAME>", req.body.name)

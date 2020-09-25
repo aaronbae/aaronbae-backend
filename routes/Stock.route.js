@@ -2,6 +2,7 @@ const express = require('express');
 const userRoutes = express.Router();
 const Stocks = require("../utils/Stocks");
 const Dates = require("../utils/Dates");
+const cron_utils = require("../utils/Cron");
 
 // Query most recent
 // Defaults to yesterday and today
@@ -102,5 +103,11 @@ userRoutes.route("/toplosers/:date/:count").get(function(req, res){
   }
 })
 
+userRoutes.route("/initiate_fetch").post(function(req, res){
+  cron_utils.fetch_fresh_data()
+  Dates.log(req.baseURL+req.path)
+  res.status(200)
+  res.send({message: "Successfully initiated"})
+})
 module.exports = userRoutes;
       

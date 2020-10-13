@@ -3,8 +3,8 @@ db.stocks.aggregate([{$unwind:"$history"},{$unset: "_id"},{$project: {ticker: "$
 db.stocks.updateMany({},{$unset:{history:1, "__v":1}})
 
 // Reverting back History and Stocks to remove DUPLICATES
-db.history.remove({date: {$gte: new Date(2020, 7, 30)}}, false)
-db.stocks.updateMany({}, {$set:{updated: new Date(2020, 7,29, 0, 0, 0)}})
+db.history.remove({date: {$gte: new Date(2020, 7, 26)}}, false)
+db.stocks.updateMany({}, {$set:{updated: new Date(2020, 7,27, 0, 0, 0)}})
 
 // Checking Reverted data
 db.history.find({ticker: "A", date: {$gte:new Date(2020, 7, 0)}})

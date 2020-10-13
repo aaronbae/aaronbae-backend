@@ -108,8 +108,12 @@ function guarantee_fresh_yahoo(ticker) {
     query.exec().then( stocks => {
       if(stocks.length == 0 || stocks[0].updated < today){
         // if no company found or info outdated
+
+        // yahoo fetch is date inclusive on both ends.
+        // need to add a day to 'previous'. Think of fence-post 
         const last_updated = stocks.length==0? Dates.to_pst(new Date('1900')): stocks[0].updated
-        return dangerously_fetch_yahoo(ticker, last_updated, today)  
+        //const first_date = Dates.add_a_day(last_updated)
+        return dangerously_fetch_yahoo(ticker, last_updated, today)
       }
       return 0
     })

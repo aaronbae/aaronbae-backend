@@ -24,6 +24,7 @@
  * 
  *********************************************************/
 module.exports = {
+  add_a_day: add_a_day,
   to_pst: to_pst,
   round_date: round_date,
   format: format,
@@ -33,6 +34,9 @@ module.exports = {
   current_formatted:current_formatted
 }
 const MAX_URL_NAME_LENGTH = 45; 
+function add_a_day(date) {
+  return new Date(date.getTime() + 24 * 60 * 60 * 1000)
+}
 function round_date(milliseconds) {
   const days_in_milli = 1000 * 60 * 60 * 24
   return new Date(Math.floor(milliseconds / days_in_milli) * days_in_milli)

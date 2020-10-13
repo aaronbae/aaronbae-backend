@@ -63,8 +63,8 @@ app.use('/api/email', emailRoute);
 
 // Cron Jobs
 //cron_utils.fetch_fresh_data()
-cron.schedule('0 0 7 * * *', () => {
-  // At Midnight PST
+cron.schedule('0 0 21 * * Monday-Friday', () => {
+  // At 2PM PST = 5PM EST (4:30PM is Market Closing)
   cron_utils.fetch_fresh_data()
 });
 
